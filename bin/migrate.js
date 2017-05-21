@@ -8,30 +8,31 @@ var colors = require('colors/safe');
 var slug = require('slug');
 var path = require('path');
 var fs = require('fs');
+var config = require('config');
 
 var config_filename = '.migrate.json';
 var config_path = process.cwd() + '/' + config_filename;
 var CONFIG;
 
 program
-  .command('init')
-  .description('Init migrations on current path')
-  .action(init);
+    .command('init')
+    .description('Init migrations on current path')
+    .action(init);
 
 program
-  .command('create <description>')
-  .description('Create Migration')
-  .action(createMigration);
+    .command('create <description>')
+    .description('Create Migration')
+    .action(createMigration);
 
 program
-  .command('down [number_of_migrations] (default = 1)')
-  .description('Migrate down')
-  .action(migrate.bind(null, 'down', process.exit));
+    .command('down [number_of_migrations] (default = 1)')
+    .description('Migrate down')
+    .action(migrate.bind(null, 'down', process.exit));
 
 program
-  .command('up [number_of_migrations]')
-  .description('Migrate up (default command)')
-  .action(migrate.bind(null, 'up', process.exit));
+    .command('up [number_of_migrations]')
+    .description('Migrate up (default command)')
+    .action(migrate.bind(null, 'up', process.exit));
 
 program.version(require('../package.json').version);
 program.parse(process.argv);
@@ -56,7 +57,10 @@ function success(msg) {
 
 function loadConfiguration() {
   try {
-    return require(config_path);
+    var _config = require(config_path);
+    _config.connection = config.get("mongoUrl");
+
+    return _config;
   } catch (e) {
     error('Missing ' + config_filename + ' file. Type `migrate init` to create.');
   }
@@ -79,11 +83,6 @@ function init() {
         description: 'Enter migrations directory',
         type: 'string',
         default: 'migrations'
-      },
-      connection: {
-        description: 'Enter mongo connection string',
-        type: 'string',
-        required: true
       }
     }
   };
@@ -92,7 +91,6 @@ function init() {
   prompt.get(schema, function (error, result) {
     CONFIG = {
       basepath: result.basepath,
-      connection: result.connection,
       current_timestamp: 0,
       models: {}
     };

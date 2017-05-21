@@ -25,11 +25,12 @@
   },
   "homepage": "https://github.com/mccraveiro/mongoose-migration",
   "dependencies": {
-    "commander": "^2.5.0",
-    "slug": "^0.8.0",
-    "prompt": "^0.2.14",
     "colors": "^1.0.3",
-    "mongoose": "^3.8.19"
+    "commander": "^2.5.0",
+    "config": "^1.26.1",
+    "mongoose": "^3.8.19",
+    "prompt": "^0.2.14",
+    "slug": "^0.8.0"
   },
   "devDependencies": {
     "jsup": "0.0.1",
